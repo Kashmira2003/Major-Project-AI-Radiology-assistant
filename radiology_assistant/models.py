@@ -27,7 +27,7 @@ class Case(db.Model):
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     details = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    diseases = db.relationship('Disease', backref='case', lazy=True)
+    diseases = db.relationship('Disease', backref='case', lazy=True, cascade="all, delete")
 
     def __repr__(self):
         return f"Case('{self.id}', '{self.date_posted}')"
