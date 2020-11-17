@@ -110,3 +110,7 @@ def logout():
 @app.route("/admin")
 def admin():
     return render_template("admin.html")
+
+@app.route("/account/cases")
+def user_cases():
+    return render_template("user_cases.html")
