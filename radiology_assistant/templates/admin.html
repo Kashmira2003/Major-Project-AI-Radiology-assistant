@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<main role="main" class="container" style="width: 60%;">
+
+    <div class="row">
+        <div class="col-3">
+            <div class="card mt-4">
+                <div class="list-group ">
+                    <a href="#" class="list-group-item list-group-item-action">My Cases</a>
+                    <a href="#" class="list-group-item list-group-item-action">Account settings</a>
+                    <a href="#" class="list-group-item list-group-item-action active">Admin</a>
+
+                </div>
+
+            </div>
+        </div>
+        <div class="col-9">
+            <form class="custom-form mt-4">
+                <div class="col-md-12 text-center">
+                    <h4>Admin Functionalities</h4>
+                    <hr>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Run Duplicate Deletion</button>
+        </div>
+    </div>
+</main>
+
+{% endblock %}
