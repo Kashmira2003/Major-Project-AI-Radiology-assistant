@@ -107,7 +107,7 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
-@app.route("/admin")
+@app.route("/account/admin")
 def admin():
     return render_template("admin.html")
 
@@ -115,6 +115,6 @@ def admin():
 def user_cases():
     return render_template("user_cases.html")
 
-    @app.route("/account/settings")
+@app.route("/account/settings")
 def account_settings():
     return render_template("settings.html")
