@@ -13,7 +13,7 @@
                       <ul>
                         {% for d, pct in results %}
                           <li class="mb-2">
-                            <a href="#", target="_blank" class="mr-1">{{ d }}</a>
+                            <a href="{{ url_for('search', query=d) }}", target="_blank" class="mr-1">{{ d }}</a>
                             <div class="progress">
                               <div class="progress-bar" role="progressbar" style="width: {{pct}}%;" aria-valuenow="{{pct}}" aria-valuemin="0" aria-valuemax="100">{{pct}}%</div>
                             </div>
