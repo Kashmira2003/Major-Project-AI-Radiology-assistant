@@ -1,8 +1,8 @@
 from radiology_assistant import app, bcrypt, db
-from flask import render_template, redirect, url_for, flash, request, session
+from flask import render_template, redirect, url_for, flash, request, session, g
 from flask_login import current_user, login_user, logout_user
 from radiology_assistant.models import User, Case, Disease
-from radiology_assistant.forms import RegistrationForm, LoginForm, ImageUploadForm, MedicalReportForm
+from radiology_assistant.forms import RegistrationForm, LoginForm, ImageUploadForm, MedicalReportForm, SearchForm
 from radiology_assistant.utils import save_temp_image, image_in_temp, model, UserSession
 
 @app.route("/", methods=['GET', 'POST'])
@@ -26,9 +26,18 @@ def confirm():
     else:
         return render_template("confirmation.html", img_name=user_image_name)
 
+@app.before_request
+def before_request():
+    g.search_form = SearchForm()
+    
 @app.route("/search")
 def search():
-    return render_template("search.html")
+    if g.search_form.validate():
+        page = request.args.get('page', 1, type=int)
+        diseases = Disease.query.filter(Disease.name.like(f"%{g.search_form.query.data}%")).paginate(page=page, per_page=60)
+        return render_template("search.html", diseases=diseases)
+    else:
+        return redirect(url_for("home"))
 
 @app.route("/results", methods=['GET', 'POST'])
 def results():
@@ -107,7 +116,7 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
-@app.route("/account/admin")
+@app.route("/admin")
 def admin():
     return render_template("admin.html")
 
@@ -115,6 +124,6 @@ def admin():
 def user_cases():
     return render_template("user_cases.html")
 
-@app.route("/account/settings")
+    @app.route("/account/settings")
 def account_settings():
     return render_template("settings.html")
