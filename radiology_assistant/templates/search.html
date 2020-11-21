@@ -12,44 +12,58 @@
 
 {% block content %}
 
-    <div class="container">
-        <h1 class="display-4 mb-4" style="font-size: xx-large;">Showing Search Results for "Disease 1"</h1>
+<div class="container">
+    {% if diseases.items|length > 0 %}
+    <h1 class="display-4 mb-4" style="font-size: xx-large;">Showing Search Results for "{{g.search_form.query.data}}"</h1>
 
-        {% for i in range(10) %}
-            <div class="row">
-                {% for j in range(10) %}
-                    <div class="col">
-                        <a href="#" class="clickable-card">
+        <div class="row row-cols-6">
+            {% for disease in diseases.items %}
+                <div class="col">
+                    <a href="{{ url_for('report', report_id=disease.case.id)}}" class="clickable-card">
 
-                        <img class="rounded img-fluid mb-4" src="{{ url_for('static', filename='images/sample_xray.jpg')}}">
+                    <img class="rounded img-fluid mb-4" src="{{ url_for('static', filename='images/xrays/'+disease.case.image)}}">
 
-                        </a>
-                    </div>
+                    </a>
+                </div>
 
-                {% endfor %}
-            </div>
+            {% endfor %}
+        </div>
 
-        {% endfor %}
 
-        <nav aria-label="Search Pagination">
-            <ul class="pagination my-4">
-            <li class="page-item disabled">
-                <span class="page-link">Previous</span>
-            </li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item" aria-current="page">
-                <span class="page-link">
-                2
-                <span class="sr-only">(current)</span>
-                </span>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-            </li>
-            </ul>
-        </nav>
+    <nav aria-label="Search Pagination">
+        <ul class="pagination my-4">
+            {% if diseases.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{url_for('search', query=g.search_form.query.data, page=diseases.prev_num)}}">Previous</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                </li>
+            {% endif %}
 
-    </div>
+            {% for page_num in diseases.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                {% if diseases.page == page_num %}
+                    <li class="page-item active"><a class="page-link" href="{{url_for('search', query=g.search_form.query.data, page=page_num)}}">{{page_num}}</a></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="{{url_for('search', query=g.search_form.query.data, page=page_num)}}">{{page_num}}</a></li>
+                {% endif %}
+            {% endfor %}
 
-{% endblock %}
+
+            {% if diseases.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{url_for('search', query=g.search_form.query.data, page=diseases.next_num)}}">Next</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Next</span>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% else %}
+        <h1 class="display-4 mb-4" style="font-size: xx-large;">No Results found for "{{g.search_form.query.data}}"</h1>
+    {% endif %}
+
+</div>
