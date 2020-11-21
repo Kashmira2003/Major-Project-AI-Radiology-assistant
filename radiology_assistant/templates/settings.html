@@ -17,7 +17,8 @@
         </div>
 
         <div class="col-9">
-            <form class="custom-form mt-4">
+            <form class="custom-form mt-4" method="POST" action="">
+                {{ form.hidden_tag() }}
                 <div class="col-md-12 text-center">
                     <h4>Update Account Settings</h4>
                     <hr>
@@ -26,30 +27,96 @@
                     <label>Update Name</label>
                     <div class="row">
                         <div class="col">
-                            <input type="text" class="form-control" placeholder="First name">
+                            {% if form.firstname.errors %}
+                                {{ form.firstname(class="form-control is-invalid", placeholder=form.firstname.label.text) }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.firstname.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.firstname(class="form-control", placeholder=form.firstname.label.text) }}
+                            {% endif %}
+                            
+                            <!-- <input type="text" class="form-control" placeholder="First name"> -->
                         </div>
                         <div class="col">
-                            <input type="text" class="form-control" placeholder="Last name">
+                            {% if form.lastname.errors %}
+                                {{ form.lastname(class="form-control is-invalid", placeholder=form.lastname.label.text) }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.lastname.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.lastname(class="form-control", placeholder=form.lastname.label.text) }}
+                            {% endif %}
+                            <!-- <input type="text" class="form-control" placeholder="Last name"> -->
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Update Username</label>
-                    <input type="text" class="form-control">
+                    {{ form.username.label(class="form-control-label") }}
+                    {% if form.username.errors %}
+                        {{ form.username(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.username.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.username(class="form-control") }}
+                    {% endif %}
+                    <!-- <label>Update Username</label>
+                    <input type="text" class="form-control"> -->
                 </div>
                 <div class="form-group">
-                    <label>Update Email</label>
-                    <input type="text" class="form-control">
+                    {{ form.email.label(class="form-control-label") }}
+                    {% if form.email.errors %}
+                        {{ form.email(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.email.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.email(class="form-control") }}
+                    {% endif %}
+                    <!-- <label>Update Email</label>
+                    <input type="text" class="form-control"> -->
                 </div>
                 <div class="form-group">
-                    <label>Update Password</label>
-                    <input type="password" class="form-control">
+                    {{ form.password.label(class="form-control-label") }}
+                    {% if form.password.errors %}
+                        {{ form.password(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.password(class="form-control") }}
+                    {% endif %}
+                    <!-- <label>Update Password</label>
+                    <input type="password" class="form-control"> -->
                 </div>
                 <div class="form-group">
-                    <label>Confirm New Password</label>
-                    <input type="password" class="form-control">
+                    {{ form.confirm_password.label(class="form-control-label") }}
+                    {% if form.confirm_password.errors %}
+                        {{ form.confirm_password(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.confirm_password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.confirm_password(class="form-control") }}
+                    {% endif %}
+                    <!-- <label>Confirm New Password</label>
+                    <input type="password" class="form-control"> -->
                 </div>
-                <button type="submit" class="btn btn-primary">Update Account</button>
+                {{ form.submit(class="btn btn-primary") }}
+                <!-- <button type="submit" class="btn btn-primary">Update Account</button> -->
             </form>
 
         </div>
