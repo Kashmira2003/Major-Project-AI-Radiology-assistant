@@ -2,7 +2,7 @@ from radiology_assistant import app, bcrypt, db
 from flask import render_template, redirect, url_for, flash, request, session, g
 from flask_login import current_user, login_user, logout_user
 from radiology_assistant.models import User, Case, Disease
-from radiology_assistant.forms import RegistrationForm, LoginForm, ImageUploadForm, MedicalReportForm, SearchForm
+from radiology_assistant.forms import RegistrationForm, LoginForm, ImageUploadForm, MedicalReportForm, SearchForm, UpdateAccountForm
 from radiology_assistant.utils import save_temp_image, image_in_temp, model, UserSession
 
 @app.route("/", methods=['GET', 'POST'])
@@ -124,6 +124,24 @@ def admin():
 def user_cases():
     return render_template("user_cases.html",cases=current_user.cases)
 
-    @app.route("/account/settings")
+@app.route("/account/settings", methods=['GET', 'POST'])
 def account_settings():
-    return render_template("settings.html")
+    form = UpdateAccountForm()
+
+    if form.validate_on_submit():
+        current_user.firstname = form.firstname.data
+        current_user.lastname = form.lastname.data
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        if len(form.password.data) > 0:
+            current_user.password = bcrypt.generate_password_hash(form.password.data).decode('utf-8') 
+        db.session.commit()
+        flash("Your account settings have been updated.", "success")
+        return redirect(url_for("home"))
+    elif request.method == "GET":
+        form.firstname.data = current_user.firstname
+        form.lastname.data = current_user.lastname
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+
+    return render_template("settings.html", form=form)

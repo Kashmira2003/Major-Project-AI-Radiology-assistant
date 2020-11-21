@@ -48,7 +48,7 @@ class SearchForm(FlaskForm):
         if 'csrf_enabled' not in kwargs:
             kwargs['csrf_enabled'] = False
         super().__init__(*args, **kwargs)
-# updated
+
 class UpdateAccountForm(FlaskForm):
     firstname = StringField('First Name', validators=[DataRequired(), Length(min=1, max=50)])
     lastname = StringField('Last Name', validators=[DataRequired(), Length(min=1, max=50)])
