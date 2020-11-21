@@ -122,7 +122,7 @@ def admin():
 
 @app.route("/account/cases")
 def user_cases():
-    return render_template("user_cases.html,cases=current_user.cases")
+    return render_template("user_cases.html",cases=current_user.cases)
 
     @app.route("/account/settings")
 def account_settings():
