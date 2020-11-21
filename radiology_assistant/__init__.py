@@ -16,7 +16,8 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
 
-from radiology_assistant.utils import dump_temp
+from radiology_assistant.utils import dump_temp, delete duplicates
 with app.app_context():
     dump_temp()
+    delete_duplicates()
 from radiology_assistant import routes
