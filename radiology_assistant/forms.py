@@ -3,7 +3,7 @@ from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from radiology_assistant.models import User
-
+from flask import request
 class RegistrationForm(FlaskForm):
     firstname = StringField('First Name', validators=[DataRequired(), Length(min=1, max=50)])
     lastname = StringField('Last Name', validators=[DataRequired(), Length(min=1, max=50)])
@@ -37,3 +37,13 @@ class MedicalReportForm(FlaskForm):
     additional_diseases = StringField('Enter Additional Diseases (Comma Seperated)', validators=[])
     additional_details = TextAreaField('Enter Additional Details')
     submit = SubmitField('Generate Report')
+
+class SearchForm(FlaskForm):
+    query = StringField('Search For Disease', validators=[DataRequired()])
+
+    def __init__(self, *args, **kwargs):
+        if 'formdata' not in kwargs:
+            kwargs['formdata'] = request.args
+        if 'csrf_enabled' not in kwargs:
+            kwargs['csrf_enabled'] = False
+        super().__init__(*args, **kwargs)
