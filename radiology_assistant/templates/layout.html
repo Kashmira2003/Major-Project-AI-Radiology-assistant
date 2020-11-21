@@ -30,13 +30,13 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarToggle">
-                    <form class="my-auto d-inline w-100 mx-auto" style="max-width: 40%;" method="GET" action="{{ url_for('search') }}"></form>
+                    <form class="my-auto d-inline w-100 mx-auto" style="max-width: 40%;" method="GET" action="{{ url_for('search') }}">
                         <div class="input-group">
                             {{ g.search_form.query(class="form-control border border-right-0", placeholder=g.search_form.query.label.text)}} 
                             <span class="input-group-append">
-                                <button class="btn btn-light border border-left-0" type="submit" style="background-color: white;"></button>
+                                <button class="btn btn-light border border-left-0" type="submit" style="background-color: white;">
                                     <i class="fa fa-search"></i>
-                                </a>
+                                </button>
                             </span>
                         </div>
                     </form>

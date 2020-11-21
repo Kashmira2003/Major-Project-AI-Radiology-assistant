@@ -5,6 +5,7 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 from radiology_assistant.models import User
 from flask import request
 from flask_login import current_user
+
 class RegistrationForm(FlaskForm):
     firstname = StringField('First Name', validators=[DataRequired(), Length(min=1, max=50)])
     lastname = StringField('Last Name', validators=[DataRequired(), Length(min=1, max=50)])

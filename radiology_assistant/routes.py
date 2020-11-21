@@ -116,13 +116,13 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
-@app.route("/admin")
+@app.route("/account/admin")
 def admin():
     return render_template("admin.html")
 
 @app.route("/account/cases")
 def user_cases():
-    return render_template("user_cases.html",cases=current_user.cases)
+    return render_template("user_cases.html", cases=current_user.cases)
 
 @app.route("/account/settings", methods=['GET', 'POST'])
 def account_settings():

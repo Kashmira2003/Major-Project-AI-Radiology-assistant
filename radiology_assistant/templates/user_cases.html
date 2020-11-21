@@ -26,13 +26,14 @@
 						</div>
 					</div>
 					
-					<div class="row justify-content-center mx-2">
+						{% for case in cases %}
+							<div class="row justify-content-center mx-2">
 
-						<div class="card mb-3 mx-auto">
-							<div class="row no-gutters">
-								 <div class="col-md-4">
-									<img src="{{url_for('static', filename='images/xrays/'+case.image)}}" class="card-img" alt="...">
-								 </div>
+								<div class="card mb-3 mx-auto">
+									<div class="row no-gutters">
+									  <div class="col-md-4">
+										<img src="{{url_for('static', filename='images/xrays/'+case.image)}}" class="card-img" alt="...">
+									  </div>
 									  <div class="col-md-8">
 										<div class="card-body">
 											<a href="{{url_for('report', report_id=case.id)}}" class="stretched-link"><h5 class="card-title">Case {{case.id}}</h5></a>
@@ -43,9 +44,18 @@
 												{% endfor %}
 											</p>
 										  <p class="card-text"><small class="text-muted">Created {{case.date_posted}}</small></p>
+										</div>
+									  </div>
 									</div>
 								  </div>
 							</div>
-						 </div>
-					</div>
 						{% endfor %}
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+{% endblock %}
