@@ -30,7 +30,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarToggle">
-                    <form class="my-auto d-inline w-100 mx-auto" style="max-width: 40%;" method="GET" action="{{ url_for('search') }}">
+                    <form class="my-auto d-inline w-100 mx-auto" style="max-width: 40%;" method="GET" action="{{ url_for('search.search') }}">
                         <div class="input-group">
                             {{ g.search_form.query(class="form-control border border-right-0", placeholder=g.search_form.query.label.text)}} 
                             <span class="input-group-append">
@@ -43,11 +43,11 @@
 
                     <div class="navbar-nav">
                         {% if current_user.is_authenticated %}
-                            <a class="nav-item nav-link" href="{{ url_for('user_cases') }}">Account</a>
-                            <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+                            <a class="nav-item nav-link" href="{{ url_for('users.user_cases') }}">Account</a>
+                            <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a>
                         {% else %}
-                            <a class="nav-item nav-link" href="{{ url_for('login') }}">Log In</a>
-                            <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
+                            <a class="nav-item nav-link" href="{{ url_for('users.login') }}">Log In</a>
+                            <a class="nav-item nav-link" href="{{ url_for('users.register') }}">Register</a>
                         {% endif %}
 
                     </div>

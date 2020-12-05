@@ -8,9 +8,9 @@
 		<div class="col-3">
 			<div class="card mt-4">
 				<div class="list-group ">
-					<a href="{{ url_for('user_cases') }}" class="list-group-item list-group-item-action active">My Cases</a>
-					<a href="{{ url_for('account_settings') }}" class="list-group-item list-group-item-action">Account settings</a>
-					<a href="{{ url_for('admin') }}" class="list-group-item list-group-item-action">Admin</a>
+					<a href="{{ url_for('users.user_cases') }}" class="list-group-item list-group-item-action active">My Cases</a>
+					<a href="{{ url_for('users.account_settings') }}" class="list-group-item list-group-item-action">Account settings</a>
+					<a href="{{ url_for('users.admin') }}" class="list-group-item list-group-item-action">Admin</a>
 
 				</div>
 
@@ -36,7 +36,7 @@
 									  </div>
 									  <div class="col-md-8">
 										<div class="card-body">
-											<a href="{{url_for('report', report_id=case.id)}}" class="stretched-link"><h5 class="card-title">Case {{case.id}}</h5></a>
+											<a href="{{url_for('main.report', report_id=case.id)}}" class="stretched-link"><h5 class="card-title">Case {{case.id}}</h5></a>
 										  <p class="card-text">{{case.patient}}</p>
 										  <p class="card-text">
 												{% for disease in case.diseases %}  

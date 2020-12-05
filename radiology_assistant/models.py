@@ -41,4 +41,3 @@ class Disease(db.Model):
     def __repr__(self):
         return f"Disease('{self.name}', '{self.case_id}')"
 
-db.create_all()

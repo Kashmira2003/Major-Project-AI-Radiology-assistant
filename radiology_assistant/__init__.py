@@ -3,21 +3,41 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_migrate import Migrate
+from config import Config
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'dev secret key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///radiologyassistant.db'
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-bcrypt = Bcrypt(app)
-login_manager = LoginManager(app)
-login_manager.login_view = 'login'
+db = SQLAlchemy()
+migrate = Migrate()
+bcrypt = Bcrypt()
+login_manager = LoginManager()
+login_manager.login_view = 'users.login'
 login_manager.login_message_category = 'info'
 
-from radiology_assistant.utils import dump_temp, delete_duplicates
-with app.app_context():
-    dump_temp()
-    delete_duplicates()
-from radiology_assistant import routes
+from radiology_assistant import models
+
+def create_app(config_class=Config):
+    app = Flask(__name__)
+    app.config.from_object(config_class)
+
+    db.init_app(app)
+    migrate.init_app(app, db)
+    bcrypt.init_app(app)
+    login_manager.init_app(app)
+
+    from radiology_assistant.search import search
+    from radiology_assistant.users import users
+    from radiology_assistant.main import main
+
+    app.register_blueprint(main)
+    app.register_blueprint(users)
+    app.register_blueprint(search)
+
+    from radiology_assistant.utils import dump_temp, delete_duplicates
+
+    with app.app_context():
+        db.create_all()
+        dump_temp()
+        delete_duplicates()
+
+    return app
+

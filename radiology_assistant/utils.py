@@ -4,7 +4,7 @@ from flask import current_app, session
 from PIL import Image, ImageChops
 import threading
 import time
-from radiology_assistant import app, db
+from radiology_assistant import db
 import random
 import shutil
 import multiprocessing

@@ -13,7 +13,7 @@
                       <ul>
                         {% for d, pct in results %}
                           <li class="mb-2">
-                            <a href="{{ url_for('search', query=d) }}", target="_blank" class="mr-1">{{ d }}</a>
+                            <a href="{{ url_for('search.search', query=d) }}", target="_blank" class="mr-1">{{ d }}</a>
                             <div class="progress">
                               <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, hsl(100deg, 100%, 50%), hsl({{100-pct}}deg, 100%, 50%)); width: {{pct-4}}%;" aria-valuenow="{{pct-4}}" aria-valuemin="0" aria-valuemax="100"></div>
                               <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(cyan,blue,cyan); width: 4;" aria-valuenow="{{pct-4}}" aria-valuemin="0" aria-valuemax="100">{{pct}}%</div>
@@ -92,7 +92,7 @@
                   </form>
                   {% else %}
                   <p class="text-center">
-                    Please <a href="{{ url_for('login') }}">log in</a> to create and save a report.
+                    Please <a href="{{ url_for('users.login') }}">log in</a> to create and save a report.
                   </p>
                   {% endif %}
             </div>
