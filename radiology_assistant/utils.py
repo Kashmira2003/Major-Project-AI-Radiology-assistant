@@ -1,17 +1,5 @@
 
     @classmethod
-    def finalize_image(cls):
-        '''
-        Moves the current user image into the site's permanantly saved xrays.
-        '''
-        image_name = cls.get_uploaded_image()
-        image_path = cls.get_uploaded_image(full_path=2)
-
-        new_path = os.path.join(current_app.root_path, current_app.static_folder, cls._permanent_xray_path, image_name)
-        shutil.copy2(image_path, new_path)
-        os.remove(image_path)
-
-    @classmethod
     def set_detected_results(cls, results):
         '''
         Saves the results of a detection.
@@ -76,8 +64,10 @@ def dump_temp():
 
 def run_duplication_deletion(constant=False):
     if constant:
+        print("Running constant duplication deletion...")
         multiprocessing.Process(target=background_deletion, daemon=True).start()
     else:
+        print("Running manual duplication deletion...")
         multiprocessing.Process(target=delete_duplicates).start()
 
 def background_deletion():
@@ -93,6 +83,10 @@ def delete_duplicates():
         for f in os.listdir(path):
             # in case we reach a file we already deleted
             if not os.path.exists(os.path.join(path, f)):
+                continue
+            # if an image doesn't belong to a case
+            elif not Case.query.filter_by(image=f).first():
+                os.remove(os.path.join(path, f))
                 continue
 
             img1 = Image.open(os.path.join(path, f))
