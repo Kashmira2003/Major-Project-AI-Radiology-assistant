@@ -1,3 +1,79 @@
+import os
+import uuid
+from flask import current_app, session
+from PIL import Image, ImageChops
+import threading
+import time
+from radiology_assistant import db
+import random
+import shutil
+import multiprocessing
+from radiology_assistant.models import Case
+from radiology_assistant import create_app
+
+class UserSession:
+    '''
+    Wrapper class around the flask session.
+
+    Provides utilities for uploading images and saving detected diseases for the user's current session on the site.
+    '''
+
+    _upload_time = 600
+    _session_image_string = "user_image"
+    _session_results_string = "detection_results"
+    _temp_image_path = os.path.join("images", "temp")
+    _permanent_xray_path = os.path.join("images", "xrays")
+
+    @classmethod
+    def set_uploaded_image(cls, img):
+        '''
+        Saves a user's uploaded image to the server.
+
+        Calling this erases any currently existing user image or results.
+        '''
+        img_id = uuid.uuid4().hex
+        _, img_ext = os.path.splitext(img.filename)
+        img_name = img_id + img_ext
+        img_path = os.path.join(current_app.root_path, current_app.static_folder, cls._temp_image_path, img_name)
+        print(img_path)
+        p_img = Image.open(img)
+        p_img.save(img_path)
+        session[cls._session_image_string] = img_name
+        # threading.Thread(target=schedule_img_delete, args=(img_name, UserSession.upload_time, app), daemon=True).start()
+
+    @classmethod
+    def get_uploaded_image(cls, full_path=0):
+        '''
+        Returns the directory for the user uploaded image, or None if no image exists.
+
+        If full_path=0, only the image name is returned.
+
+        If full_path=1, Return format is as follows: "images/temp/image_id.format"
+         
+        If full_path=2, "path/to/current/app/static/" is included at the start of the path as well.
+        '''
+        user_image = session.get(cls._session_image_string)
+        img_path = os.path.join(current_app.root_path, current_app.static_folder, cls._temp_image_path, user_image)
+        if user_image is not None and os.path.exists(img_path):
+            if full_path == 0:
+                return user_image
+            elif full_path == 1:
+                return os.path.join(cls._temp_image_path, user_image)
+            elif full_path == 2:
+                return img_path
+
+
+    @classmethod
+    def finalize_image(cls):
+        '''
+        Moves the current user image into the site's permanantly saved xrays.
+        '''
+        image_name = cls.get_uploaded_image()
+        image_path = cls.get_uploaded_image(full_path=2)
+
+        new_path = os.path.join(current_app.root_path, current_app.static_folder, cls._permanent_xray_path, image_name)
+        shutil.copy2(image_path, new_path)
+        os.remove(image_path)
 
     @classmethod
     def set_detected_results(cls, results):
