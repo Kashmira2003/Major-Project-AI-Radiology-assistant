@@ -3,7 +3,8 @@ from radiology_assistant import bcrypt, db
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import current_user, login_user, logout_user
 from radiology_assistant.models import User
-from radiology_assistant.users.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from radiology_assistant.users.forms import AdminForm, RegistrationForm, LoginForm, UpdateAccountForm
+from radiology_assistant.utils import run_duplication_deletion
 
 @users.route("/register", methods=['GET', 'POST'])
 def register():
@@ -39,9 +40,15 @@ def logout():
     logout_user()
     return redirect(url_for('main.home'))
 
-@users.route("/account/admin")
+@users.route("/account/admin", methods=['GET', 'POST'])
 def admin():
-    return render_template("admin.html")
+    form = AdminForm()
+    if form.validate_on_submit():
+        run_duplication_deletion(constant=False)
+        flash("Duplication Deletion started.", "success")
+        return redirect(url_for("main.home"))
+
+    return render_template("admin.html", form=form)
 
 @users.route("/account/cases")
 def user_cases():
