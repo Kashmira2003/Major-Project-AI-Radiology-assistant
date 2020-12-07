@@ -9,6 +9,7 @@ import random
 import shutil
 import multiprocessing
 from radiology_assistant.models import Case
+from radiology_assistant import create_app
 
 class UserSession:
     '''
@@ -137,30 +138,44 @@ def dump_temp():
         os.remove(os.path.join(temp, f))
 
 
+def run_duplication_deletion(constant=False):
+    if constant:
+        print("Running constant duplication deletion...")
+        multiprocessing.Process(target=background_deletion, daemon=True).start()
+    else:
+        print("Running manual duplication deletion...")
+        multiprocessing.Process(target=delete_duplicates).start()
 
-def run_duplication_deletion():
-    multiprocessing.Process(target=delete_duplicates, args=(app,), daemon=True).start()
+def background_deletion():
+    while True:
+        delete_duplicates()
+        time.sleep(1800)
 
 def delete_duplicates():
-    path = os.path.join(current_app.root_path, "static", "images", "xrays")
+    app = create_app()
+    with app.app_context():
+        path = os.path.join(current_app.root_path, "static", "images", "xrays")
 
-    for f in os.listdir(path):
-        # in case we reach a file we already deleted
-        if not os.path.exists(os.path.join(path, f)):
-            continue
+        for f in os.listdir(path):
+            # in case we reach a file we already deleted
+            if not os.path.exists(os.path.join(path, f)):
+                continue
+            # if an image doesn't belong to a case
+            elif not Case.query.filter_by(image=f).first():
+                os.remove(os.path.join(path, f))
+                continue
 
-        img1 = Image.open(os.path.join(path, f))
-        for f2 in os.listdir(path):
-            if f != f2:
-                img2 = Image.open(os.path.join(path, f2))
-                try:
-                    diff = ImageChops.difference(img1, img2)
-                    if not diff.getbbox():
-                        case = Case.query.filter_by(image=f2).first()
-                        if case:
-                            db.session.delete(case)
-                            db.session.commit()
-                            os.remove(os.path.join(path, f2))
-                except ValueError:
-                    continue
-
+            img1 = Image.open(os.path.join(path, f))
+            for f2 in os.listdir(path):
+                if f != f2:
+                    img2 = Image.open(os.path.join(path, f2))
+                    try:
+                        diff = ImageChops.difference(img1, img2)
+                        if not diff.getbbox():
+                            case = Case.query.filter_by(image=f2).first()
+                            if case:
+                                db.session.delete(case)
+                                db.session.commit()
+                                os.remove(os.path.join(path, f2))
+                    except ValueError:
+                        continue

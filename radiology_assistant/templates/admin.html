@@ -17,12 +17,13 @@
             </div>
         </div>
         <div class="col-9">
-            <form class="custom-form mt-4">
+            <form class="custom-form mt-4" method="POST" action="">
+                {{ form.hidden_tag() }}
                 <div class="col-md-12 text-center">
                     <h4>Admin Functionalities</h4>
                     <hr>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Run Duplicate Deletion</button>
+                {{ form.submit(class="btn btn-primary btn-block") }}
         </div>
     </div>
 </main>

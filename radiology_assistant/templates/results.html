@@ -13,11 +13,19 @@
                       <ul>
                         {% for d, pct in results %}
                           <li class="mb-2">
-                            <a href="{{ url_for('search.search', query=d) }}", target="_blank" class="mr-1">{{ d }}</a>
+                            <a href="{{ url_for('search.search', query=d) }}", target="_blank" class="mr-1">{{ d }} </a> {{pct}}%
                             <div class="progress">
-                              <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, hsl(100deg, 100%, 50%), hsl({{100-pct}}deg, 100%, 50%)); width: {{pct-4}}%;" aria-valuenow="{{pct-4}}" aria-valuemin="0" aria-valuemax="100"></div>
-                              <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(cyan,blue,cyan); width: 4;" aria-valuenow="{{pct-4}}" aria-valuemin="0" aria-valuemax="100">{{pct}}%</div>
+                            {% if pct <= 50 %}
+                              <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, hsl(100deg, 100%, 50%), hsl({{100-pct}}deg, 100%, 50%)); width: {{pct-4}}%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                              <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, rgb(0, 123, 255), rgb(159, 205, 255), rgb(0, 123, 255)); width: 8%;" aria-valuenow="{{pct-4}}" aria-valuemin="0" aria-valuemax="100"></div>
+                              <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, hsl({{100-pct}}deg, 100%, 50%) , hsl(50deg, 100%, 50%)); width: {{46-pct}}%;" aria-valuenow="{{100-pct}}" aria-valuemin="0" aria-valuemax="100"></div>
+                              <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, hsl(50deg, 100%, 50%) , hsl(0deg, 100%, 50%)); width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                            {% else %}
+                              <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, hsl(100deg, 100%, 50%), hsl(50deg, 100%, 50%)); width: 50%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                              <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, hsl(50deg, 100%, 50%), hsl({{100-pct}}deg, 100%, 50%)); width: {{pct-54}}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                              <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, rgb(0, 123, 255), rgb(159, 205, 255), rgb(0, 123, 255)); width: 8%;" aria-valuenow="{{pct-4}}" aria-valuemin="0" aria-valuemax="100"></div>
                               <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, hsl({{100-pct}}deg, 100%, 50%) , hsl(0deg, 100%, 50%)); width: {{96-pct}}%;" aria-valuenow="{{100-pct}}" aria-valuemin="0" aria-valuemax="100"></div>
+                            {% endif %}
 <!--
                               {% if (pct <= 25) %}
                                 <div class="progress-bar bg-success" role="progressbar" style="width: {{pct}}%;" aria-valuenow="{{pct}}" aria-valuemin="0" aria-valuemax="100">{{pct}}%</div>

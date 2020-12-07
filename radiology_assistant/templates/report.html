@@ -28,12 +28,20 @@
                         <ul class="list-group list-group-flush">
                           {% for disease in detected %}
                             <li class="list-group-item">
-                              <p>{{ disease.name }}</p>
+                              <p>{{ disease.name }} {{(disease.percentage*100)|int}}%</p>
                               <div class="progress">
-                                <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, hsl(100deg, 100%, 50%), hsl({{100-(disease.percentage*100|int)}}deg, 100%, 50%)); width: {{(disease.percentage*100|int)-4}}%;" aria-valuenow="{{(disease.percentage*100|int)-4}}" aria-valuemin="0" aria-valuemax="100"></div>
-                                <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(cyan,blue,cyan); width: 4;" aria-valuenow="{{(disease.percentage*100|int)-4}}" aria-valuemin="0" aria-valuemax="100">{{(disease.percentage*100|int)}}%</div>
-                                <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, hsl({{100-(disease.percentage*100|int)}}deg, 100%, 50%) , hsl(0deg, 100%, 50%)); width: {{96-(disease.percentage*100|int)}}%;" aria-valuenow="{{100-(disease.percentage*100|int)}}" aria-valuemin="0" aria-valuemax="100"></div>
-  <!--
+                              {% if (disease.percentage*100)|int <= 50 %}
+                                <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, hsl(100deg, 100%, 50%), hsl({{100-(disease.percentage*100)|int}}deg, 100%, 50%)); width: {{(disease.percentage*100)|int-4}}%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, rgb(0, 123, 255), rgb(159, 205, 255), rgb(0, 123, 255)); width: 8%;" aria-valuenow="{{(disease.percentage*100)|int-4}}" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, hsl({{100-(disease.percentage*100)|int}}deg, 100%, 50%) , hsl(50deg, 100%, 50%)); width: {{46-(disease.percentage*100)|int}}%;" aria-valuenow="{{100-(disease.percentage*100)|int}}" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, hsl(50deg, 100%, 50%) , hsl(0deg, 100%, 50%)); width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                              {% else %}
+                                <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, hsl(100deg, 100%, 50%), hsl(50deg, 100%, 50%)); width: 50%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, hsl(50deg, 100%, 50%), hsl({{100-(disease.percentage*100)|int}}deg, 100%, 50%)); width: {{(disease.percentage*100)|int-54}}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, rgb(0, 123, 255), rgb(159, 205, 255), rgb(0, 123, 255)); width: 8%;" aria-valuenow="{{(disease.percentage*100)|int-4}}" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(to right, hsl({{100-(disease.percentage*100)|int}}deg, 100%, 50%) , hsl(0deg, 100%, 50%)); width: {{96-(disease.percentage*100)|int}}%;" aria-valuenow="{{100-(disease.percentage*100)|int}}" aria-valuemin="0" aria-valuemax="100"></div>
+                              {% endif %}
+<!--
                                 {% if ((disease.percentage*100|int) <= 25) %}
                                   <div class="progress-bar bg-success" role="progressbar" style="width: {{(disease.percentage*100|int)}}%;" aria-valuenow="{{(disease.percentage*100|int)}}" aria-valuemin="0" aria-valuemax="100">{{(disease.percentage*100|int)}}%</div>
                                 {% elif (25 < (disease.percentage*100|int) <= 65) %}
