@@ -85,13 +85,13 @@
                     </div> -->
                     <div class="form-group">
                         {{ form.additional_diseases.label(class="form-control-label") }}
-                        {{ form.additional_details(class="form-control", placeholder = summary) }}
+                        {{ form.additional_diseases(class="form-control", placeholder = "Disease 1, Disease 2, Disease3")}}
                         <!-- <label for="doctorNameInput">Enter Additional Diseases (Comma Seperated)</label>
                         <input type="text" class="form-control" id="diseaseInput" placeholder="Ex: Disease 1, Disease 2, Disease 3"> -->
                     </div>
                     <div class="form-group">
                         {{ form.additional_details.label(class="form-control-label") }}
-                        {{ form.additional_details(class="form-control", placeholder="Enter any additional info/comments about the case here.") }}
+                        {{ form.additional_details(class="form-control", placeholder = "Enter a general summary and additional info/comments about the case here.") }}
                         <!-- <label for="additionalInfoText">Enter Additional Details</label>
                         <textarea class="form-control" id="additionalInfoText" rows="3", placeholder="Enter any additional info/comments about the case here."></textarea> -->
                     </div>

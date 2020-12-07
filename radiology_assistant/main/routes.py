@@ -59,19 +59,41 @@ def results():
         results = [(disease, int(pct*100)) for disease, pct in results]
         summary = ""
         for x in range(len(results)):
-            if (x == (len(results)-1) and x != 0):
-                summary += "and "
-            if results[x][1] < 15:
-                summary += str("Atypical showing signs of " + results[x][0])
-            elif results[x][1] < 25:
-                summary += str("Acute symptoms of " + results[x][0])
-            elif results[x][1] < 65:
-                summary += str("Moderate symptoms of " + results[x][0])
+            if x != 0:
+                if x == (len(results)-1) and x != 0:
+                    summary += "and "
+            if str(results[x][0]) == "Nodule":
+                if results[x][1] < 15:
+                    summary += str("Presence of few" + results[x][0] + "s")
+                else:
+                    summary += str("Presence of many" + results[x][0] + "s")
+            elif str(results[x][0]) == "Mass":
+                if results[x][1] < 15:
+                    summary += str("Presence of a small or few small Masses")
+                else:
+                    summary += str("Presence of one large or several small Masses")
+            elif str(results[x][0]) == "Hernia":
+                if results[x][1] < 15:
+                    summary += str("Atypical/showing signs of a " + results[x][0])
+                elif results[x][1] < 25:
+                    summary += str("Acute symptoms of a " + results[x][0])
+                elif results[x][1] < 65:
+                    summary += str("Moderate symptoms of a " + results[x][0])
+                else:
+                    summary += str("Severe symptoms of a " + results[x][0])
             else:
-                summary += str("Severe symptoms of " + results[x][0])
+                if results[x][1] < 15:
+                    summary += str("Atypical/showing signs of " + results[x][0])
+                elif results[x][1] < 25:
+                    summary += str("Acute symptoms of " + results[x][0])
+                elif results[x][1] < 65:
+                    summary += str("Moderate symptoms of " + results[x][0])
+                else:
+                    summary += str("Severe symptoms of " + results[x][0])                
             if x < (len(results)-1):
                 summary += ", "
-        return render_template("results.html", image=user_image_name, results=results, user_auth=current_user.is_authenticated, form=form, summary=summary)
+        form.additional_details.data=summary
+        return render_template("results.html", image=user_image_name, results=results, user_auth=current_user.is_authenticated, form=form)
 
 @main.route("/report/<int:report_id>")
 def report(report_id):

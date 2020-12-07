@@ -9,5 +9,5 @@ class ImageUploadForm(FlaskForm):
 class MedicalReportForm(FlaskForm):
     patient_name = StringField('Patient Name', validators=[DataRequired(), Length(min=2, max=50)])
     additional_diseases = StringField('Enter Additional Diseases (Comma Seperated)', validators=[])
-    additional_details = TextAreaField('Enter Additional Details')
+    additional_details = TextAreaField('Enter A General Summary With Additional Details')
     submit = SubmitField('Generate Report')
