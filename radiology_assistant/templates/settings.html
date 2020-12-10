@@ -40,7 +40,6 @@
                                 {{ form.firstname(class="form-control", placeholder=form.firstname.label.text) }}
                             {% endif %}
                             
-                            <!-- <input type="text" class="form-control" placeholder="First name"> -->
                         </div>
                         <div class="col">
                             {% if form.lastname.errors %}
@@ -53,7 +52,6 @@
                             {% else %}
                                 {{ form.lastname(class="form-control", placeholder=form.lastname.label.text) }}
                             {% endif %}
-                            <!-- <input type="text" class="form-control" placeholder="Last name"> -->
                         </div>
                     </div>
                 </div>
@@ -69,8 +67,7 @@
                     {% else %}
                         {{ form.username(class="form-control") }}
                     {% endif %}
-                    <!-- <label>Update Username</label>
-                    <input type="text" class="form-control"> -->
+
                 </div>
                 <div class="form-group">
                     {{ form.email.label(class="form-control-label") }}
@@ -84,8 +81,7 @@
                     {% else %}
                         {{ form.email(class="form-control") }}
                     {% endif %}
-                    <!-- <label>Update Email</label>
-                    <input type="text" class="form-control"> -->
+
                 </div>
                 <div class="form-group">
                     {{ form.password.label(class="form-control-label") }}
@@ -99,8 +95,7 @@
                     {% else %}
                         {{ form.password(class="form-control") }}
                     {% endif %}
-                    <!-- <label>Update Password</label>
-                    <input type="password" class="form-control"> -->
+
                 </div>
                 <div class="form-group">
                     {{ form.confirm_password.label(class="form-control-label") }}
@@ -114,11 +109,10 @@
                     {% else %}
                         {{ form.confirm_password(class="form-control") }}
                     {% endif %}
-                    <!-- <label>Confirm New Password</label>
-                    <input type="password" class="form-control"> -->
+
                 </div>
                 {{ form.submit(class="btn btn-primary") }}
-                <!-- <button type="submit" class="btn btn-primary">Update Account</button> -->
+
             </form>
 
         </div>

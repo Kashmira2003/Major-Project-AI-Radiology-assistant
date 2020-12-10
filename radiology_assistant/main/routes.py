@@ -12,7 +12,6 @@ def home():
     form = ImageUploadForm()
     if form.is_submitted():
         if form.validate():
-            # save_temp_image(form.image.data, 600)
             UserSession.set_uploaded_image(form.image.data)
             return redirect(url_for("main.confirm"))
         else:

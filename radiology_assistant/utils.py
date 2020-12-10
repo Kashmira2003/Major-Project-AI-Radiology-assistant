@@ -2,7 +2,6 @@ import os
 import uuid
 from flask import current_app, session
 from PIL import Image, ImageChops
-import threading
 import time
 from radiology_assistant import db
 import random
@@ -19,7 +18,6 @@ class UserSession:
     Provides utilities for uploading images and saving detected diseases for the user's current session on the site.
     '''
 
-    _upload_time = 600
     _session_image_string = "user_image"
     _session_results_string = "detection_results"
     _temp_image_path = os.path.join("images", "temp")
@@ -40,7 +38,6 @@ class UserSession:
         p_img = Image.open(img)
         p_img.save(img_path)
         session[cls._session_image_string] = img_name
-        # threading.Thread(target=schedule_img_delete, args=(img_name, UserSession.upload_time, app), daemon=True).start()
 
     @classmethod
     def get_uploaded_image(cls, full_path=0):
@@ -91,37 +88,6 @@ class UserSession:
         return session.get(cls._session_results_string)
 
 
-def schedule_img_delete(img, secs, cur_app):
-    time.sleep(secs)
-    try:
-        with cur_app.app_context():
-            os.remove(os.path.join(cur_app.root_path, "static", "images", "temp", img))
-    except Exception as e:
-        print(e)
-        pass
-
-def save_temp_image(img, secs):
-    img_id = uuid.uuid4().hex
-    _, img_ext = os.path.splitext(img.filename)
-    img_name = img_id + img_ext
-    img_path = os.path.join(current_app.root_path, "static", "images", "temp", img_name)
-
-    p_img = Image.open(img)
-    p_img.save(img_path)
-    session["temp_image"] = img_name
-    threading.Thread(target=schedule_img_delete, args=(img_name, secs, app), daemon=True).start()
-    return img_name
-
-def image_in_temp():
-    temp_image = session.get("temp_image")
-    if temp_image is None:
-        return False
-    else:
-        return os.path.exists(os.path.join(current_app.root_path, "static", "images", "temp", temp_image))
-
-
-
-
 def model(img):
     # this function can be edited as necessary
     # it accepts the image path as a parameter
@@ -134,7 +100,6 @@ def model(img):
     percentages = [random.uniform(0.1,0.99) for _ in detected]
 
     return list(zip(detected, percentages))
-
 
 
 def dump_temp():
@@ -151,10 +116,12 @@ def run_duplication_deletion(constant=False):
         print("Running manual duplication deletion...")
         multiprocessing.Process(target=delete_duplicates).start()
 
+
 def background_deletion():
     while True:
         delete_duplicates()
         time.sleep(Config.MINUTES_BETWEEN_DUPLICATE_DELETION)
+
 
 def delete_duplicates():
     app = create_app()
