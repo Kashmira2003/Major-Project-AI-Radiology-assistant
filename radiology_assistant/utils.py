@@ -10,6 +10,7 @@ import shutil
 import multiprocessing
 from radiology_assistant.models import Case
 from radiology_assistant import create_app
+from config import Config
 
 class UserSession:
     '''
@@ -149,7 +150,7 @@ def run_duplication_deletion(constant=False):
 def background_deletion():
     while True:
         delete_duplicates()
-        time.sleep(1800)
+        time.sleep(Config.MINUTES_BETWEEN_DUPLICATE_DELETION)
 
 def delete_duplicates():
     app = create_app()
