@@ -1,3 +1,4 @@
+from sys import path
 from radiology_assistant.main import main
 from radiology_assistant import db
 from flask import render_template, redirect, url_for, flash, request
@@ -54,7 +55,10 @@ def results():
             return redirect(url_for("main.report", report_id=case.id))
 
     elif request.method == "GET":
-        results = model(user_image_name)
+        # here is where the image name gets passed to the dummy model
+        # path=2 in the get_uploaded_image function gives the whole path to the image along with its name
+        # read the docstring on it for more info
+        results = model(UserSession.get_uploaded_image(path=2))
         UserSession.set_detected_results(results)
         results = [(disease, int(pct*100)) for disease, pct in results]
         summary = ""

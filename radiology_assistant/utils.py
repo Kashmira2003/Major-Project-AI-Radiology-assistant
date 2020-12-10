@@ -123,6 +123,10 @@ def image_in_temp():
 
 
 def model(img):
+    # this function can be edited as necessary
+    # it accepts the image path as a parameter
+    # it should return a list of tuples, where each entry is (disease_name, percentage) where percentage is a float between 0 and 1
+    
     diseases = ["Cardiomegaly", "Emphysema", "Effusion", "Hernia", "Infiltration", "Mass", "Nodule", "Atelectasis", "Pneumothorax", "Pleural_Thickening"]
     time.sleep(2)
     num_diseases = random.randint(0, 4)
