@@ -57,7 +57,11 @@ def results():
         # here is where the image name gets passed to the dummy model
         # full_path=2 in the get_uploaded_image function gives the whole path to the image along with its name
         # read the docstring on it for more info
-        results = model(UserSession.get_uploaded_image(full_path=2))
+        try:
+            results = model(UserSession.get_uploaded_image(full_path=2))
+        except Exception:
+            flash("Error connecting to detection model. Please try again later.", "danger")
+            return redirect(url_for("main.home"))
         UserSession.set_detected_results(results)
         results = [(disease, int(pct*100)) for disease, pct in results]
         summary = ""
