@@ -55,9 +55,9 @@ def results():
 
     elif request.method == "GET":
         # here is where the image name gets passed to the dummy model
-        # path=2 in the get_uploaded_image function gives the whole path to the image along with its name
+        # full_path=2 in the get_uploaded_image function gives the whole path to the image along with its name
         # read the docstring on it for more info
-        results = model(UserSession.get_uploaded_image(path=2))
+        results = model(UserSession.get_uploaded_image(full_path=2))
         UserSession.set_detected_results(results)
         results = [(disease, int(pct*100)) for disease, pct in results]
         summary = ""

@@ -10,6 +10,9 @@ import multiprocessing
 from radiology_assistant.models import Case
 from radiology_assistant import create_app
 from config import Config
+import numpy as np
+import cv2
+import socket
 
 class UserSession:
     '''
@@ -36,7 +39,12 @@ class UserSession:
         img_path = os.path.join(current_app.root_path, current_app.static_folder, cls._temp_image_path, img_name)
         print(img_path)
         p_img = Image.open(img)
-        p_img.save(img_path)
+        
+        # here are the RGB changes
+        rgb_img = Image.new("RGB", p_img.size)
+        rgb_img.paste(p_img)
+        rgb_img.save(img_path)
+        
         session[cls._session_image_string] = img_name
 
     @classmethod
@@ -87,16 +95,61 @@ class UserSession:
         '''
         return session.get(cls._session_results_string)
 
+def convert_to_bytes(no):
+    result = bytearray()
+    result.append(no & 255)
+    for i in range(3):
+        no = no >> 8
+        result.append(no & 255)
+    return result
+
+def bytes_to_number(b):
+    # if Python2.x
+    # b = map(ord, b)
+    res = 0
+    for i in range(4):
+        res += b[i] << (i*8)
+    return res
+
+def get_model_results(img):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            
+            port = 5061
+            s.connect((socket.gethostname(), port))
+
+            file = UserSession.get_uploaded_image(full_path=2)
+            f = open(file, 'rb')
+            f = f.read()
+
+            length = convert_to_bytes(len(f))
+            s.send(length)
+            s.send(f)
+
+            print("awaiting results...")
+            size = s.recv(4)
+
+            result = s.recv(bytes_to_number(size))
+            print(result)
+            s.close()
+    return result
 
 def model(img):
     # this function can be edited as necessary
     # it accepts the image path as a parameter
     # it should return a list of tuples, where each entry is (disease_name, percentage) where percentage is a float between 0 and 1
-    
-    diseases = ["Cardiomegaly", "Emphysema", "Effusion", "Hernia", "Infiltration", "Mass", "Nodule", "Atelectasis", "Pneumothorax", "Pleural_Thickening"]
+    diseases = ['Fracture', 'Pneumothorax', 'Airspace opacity', 'Nodule or mass', 'Disease not detected']
+    results = str(get_model_results(img))
     time.sleep(2)
-    num_diseases = random.randint(0, 4)
-    detected = random.sample(diseases, num_diseases)
+    detected = []
+    for i in diseases:
+        if i in results:
+            detected.append(i)
+
+    #count = 0
+    #for i in test_str: 
+    #    if i == '0.': 
+    #        count = count + 1
+
     percentages = [random.uniform(0.1,0.99) for _ in detected]
 
     return list(zip(detected, percentages))
@@ -151,3 +204,5 @@ def delete_duplicates():
                                 os.remove(os.path.join(path, f2))
                     except ValueError:
                         continue
+
+
