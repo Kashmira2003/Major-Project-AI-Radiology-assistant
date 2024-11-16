@@ -13,6 +13,8 @@ from config import Config
 import numpy as np
 import cv2
 import socket
+from flask import render_template
+
 
 class UserSession:
     '''
@@ -111,54 +113,148 @@ def bytes_to_number(b):
         res += b[i] << (i*8)
     return res
 
-def get_model_results(img):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+# def get_model_results(img):
+#     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             
+#             port = 5061
+#             s.connect((socket.gethostname(), port))
+
+#             file = UserSession.get_uploaded_image(full_path=2)
+#             f = open(file, 'rb')
+#             f = f.read()
+
+#             length = convert_to_bytes(len(f))
+#             s.send(length)
+#             s.send(f)
+
+#             print("awaiting results...")
+#             size = s.recv(4)
+
+#             result = s.recv(bytes_to_number(size))
+#             print(result)
+#             s.close()
+#     return result
+
+
+def get_model_results(img):
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             port = 5061
-            s.connect((socket.gethostname(), port))
+            s.connect(('127.0.0.1', port))  # Make sure model server is running here
 
             file = UserSession.get_uploaded_image(full_path=2)
-            f = open(file, 'rb')
-            f = f.read()
+            with open(file, 'rb') as f:
+                file_data = f.read()
 
-            length = convert_to_bytes(len(f))
+            length = convert_to_bytes(len(file_data))
             s.send(length)
-            s.send(f)
+            s.send(file_data)
 
-            print("awaiting results...")
+            print("Awaiting results...")
             size = s.recv(4)
+            result_size = bytes_to_number(size)
+            result = s.recv(result_size)
 
-            result = s.recv(bytes_to_number(size))
-            print(result)
-            s.close()
-    return result
+            print("Received results:", result)
+            return result
+    except Exception as e:
+        print(f"Error connecting to detection model: {e}")
+        return "Error: Could not connect to model server. Please try again later."
+
+
+
+# def model(img):
+#     # this function can be edited as necessary
+#     # it accepts the image path as a parameter
+#     # it should return a list of tuples, where each entry is (disease_name, percentage) where percentage is a float between 0 and 1
+#     diseases = ['Fracture', 'Pneumothorax', 'Airspace opacity', 'Nodule or mass', 'Disease not detected']
+#     results = str(get_model_results(img))
+#     time.sleep(2)
+#     detected = []
+#     for i in diseases:
+#         if i in results:
+#             detected.append(i)
+
+#     #count = 0
+#     #for i in test_str: 
+#     #    if i == '0.': 
+#     #        count = count + 1
+
+#     percentages = [random.uniform(0.1,0.99) for _ in detected]
+
+#     return list(zip(detected, percentages))
+
+
 
 def model(img):
+    # Print statement to confirm the model was called and with what image
+    print("Running disease detection on image:", img)
+    
     # this function can be edited as necessary
-    # it accepts the image path as a parameter
-    # it should return a list of tuples, where each entry is (disease_name, percentage) where percentage is a float between 0 and 1
     diseases = ['Fracture', 'Pneumothorax', 'Airspace opacity', 'Nodule or mass', 'Disease not detected']
+    
+    # Get the result from the socket-based model
     results = str(get_model_results(img))
+    print("Raw model results:", results)  # Debug statement
+
     time.sleep(2)
     detected = []
-    for i in diseases:
-        if i in results:
-            detected.append(i)
+    for disease in diseases:
+        if disease in results:
+            detected.append(disease)
 
-    #count = 0
-    #for i in test_str: 
-    #    if i == '0.': 
-    #        count = count + 1
+    percentages = [random.uniform(0.1, 0.99) for _ in detected]
+    predictions = list(zip(detected, percentages))
+    
+    print("Predictions generated:", predictions)  # Debug statement
+    return predictions
 
-    percentages = [random.uniform(0.1,0.99) for _ in detected]
 
-    return list(zip(detected, percentages))
+# extra added code
+# Assuming this part calls the model for disease detection
+def perform_detection():
+    img = UserSession.get_uploaded_image(full_path=2)
+    predictions = model(img)  # Run the model to get predictions
+
+    # Save the predictions in the session
+    UserSession.set_detected_results(predictions)
+    
+    # Debug: Confirm results are saved
+    print("Detection results saved in session:", session.get(UserSession._session_results_string))
+    return predictions
+
+
+def generate_report():
+    # Retrieve the prediction from the session
+    prediction = UserSession.get_detected_results()
+
+    # Display an error if no detection has been made
+    if not prediction:
+        return "No prediction available. Please run detection first."
+
+    # Create the report based on the prediction
+    report = f"Detected Diseases: {prediction}"
+    print(report)  # Debug statement to check report content
+
+    # Render this in your template
+    return render_template('report.html', prediction=prediction)
+
 
 
 def dump_temp():
+    # temp = os.path.join(current_app.root_path, "static", "images", "temp")
+    # for f in os.listdir(temp):
+    #     os.remove(os.path.join(temp, f))
     temp = os.path.join(current_app.root_path, "static", "images", "temp")
-    for f in os.listdir(temp):
-        os.remove(os.path.join(temp, f))
+    
+    # Check if the directory exists
+    if os.path.exists(temp):
+        for f in os.listdir(temp):
+            os.remove(os.path.join(temp, f))
+    else:
+        # If the directory doesn't exist, create it
+        os.makedirs(temp)
+
 
 
 def run_duplication_deletion(constant=False):
